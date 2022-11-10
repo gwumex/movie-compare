@@ -5,13 +5,20 @@ const fetchData = async (searchTerm) => {
             s: searchTerm
         }
     });
-    
     console.log(response.data);
-    console.log("object");
 };
-
+let timeOut;
 const input = document.querySelector('input');
-
-input.addEventListener("input", (e) =>{
-    fetchData(e.target.value)
-})
+const onInput = (e) => {
+    if(timeOut){
+        clearInterval(timeOut)
+    }
+    timeOut = setTimeout(() => {
+        if(!e.target.value.match("[a-zA-Z]")){
+            console.log("i didnt run");
+            return;
+        }
+        fetchData(e.target.value)
+    }, 1000)
+}
+input.addEventListener("input", onInput)
