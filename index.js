@@ -5,14 +5,14 @@ const fetchData = async (searchTerm) => {
             s: searchTerm
         }
     });
-    if(response.data.Error){
+    if (response.data.Error) {
         return [];
     }
     return response.data.Search;
 };
 
 const root = document.querySelector('.autocomplete');
-    root.innerHTML = `
+root.innerHTML = `
     <label><b>Search For a Movie</b></label>
     <input class = "input"></input>
     <div class = "dropdown">
@@ -25,22 +25,22 @@ const root = document.querySelector('.autocomplete');
     </div>
     `;
 
- 
+
 const input = document.querySelector('input');
 const dropdown = document.querySelector('.dropdown');
 const resultsWrapper = document.querySelector('.results');
 const onInput = async (e) => {
-        if(e.target.value.match("[a-zA-Z]")){
-          const movies = await fetchData(e.target.value);
+    if (e.target.value.match("[a-zA-Z]")) {
+        const movies = await fetchData(e.target.value);
 
-          if(!movies.length){
+        if (!movies.length) {
             dropdown.classList.remove("is-active");
             return;
-          }
-          resultsWrapper.innerHTML = "";
-          dropdown.classList.add('is-active');
+        }
+        resultsWrapper.innerHTML = "";
+        dropdown.classList.add('is-active');
 
-          for(let movie of movies){
+        for (let movie of movies) {
             const option = document.createElement('a');
             const imgSrc = movie.Poster === "N/A" ? "" : movie.Poster;
 
@@ -52,16 +52,28 @@ const onInput = async (e) => {
 
             option.addEventListener('click', () => {
                 dropdown.classList.remove("is-active");
+                input.value = movie.Title;
+                onMovieSelect(movie)
             })
+
             resultsWrapper.appendChild(option);
-          }
+        }
     }
 }
 input.addEventListener("input", debounce(onInput, 1000))
 
 document.addEventListener('click', event => {
-    if(!root.contains(event.target)){
+    if (!root.contains(event.target)) {
         dropdown.classList.remove("is-active");
-        input.value = movie.Title;
     }
 })
+
+const onMovieSelect = async (movie) => {
+    const response = await axios.get('http://www.omdbapi.com/', {
+        params: {
+            apikey: '6d229a2c',
+            i: movie.imdbID
+        }
+    });
+    console.log(response.data);
+}
