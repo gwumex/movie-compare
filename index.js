@@ -43,11 +43,16 @@ const onInput = async (e) => {
           for(let movie of movies){
             const option = document.createElement('a');
             const imgSrc = movie.Poster === "N/A" ? "" : movie.Poster;
+
             option.classList.add("dropdown-item")
             option.innerHTML = `
             <img src="${movie.Poster}" alt="" />
            ${movie.Title}
             `;
+
+            option.addEventListener('click', () => {
+                dropdown.classList.remove("is-active");
+            })
             resultsWrapper.appendChild(option);
           }
     }
@@ -56,6 +61,7 @@ input.addEventListener("input", debounce(onInput, 1000))
 
 document.addEventListener('click', event => {
     if(!root.contains(event.target)){
-        dropdown.classList.remove("is-active")
+        dropdown.classList.remove("is-active");
+        input.value = movie.Title;
     }
 })
