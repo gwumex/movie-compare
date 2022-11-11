@@ -5,20 +5,15 @@ const fetchData = async (searchTerm) => {
             s: searchTerm
         }
     });
-    console.log(response.data);
+    return response.data.Search;
 };
-let timeOut;
+ 
 const input = document.querySelector('input');
-const onInput = (e) => {
-    if(timeOut){
-        clearInterval(timeOut)
+
+const onInput = async (e) => {
+        if(e.target.value.match("[a-zA-Z]")){
+          const movies = await fetchData(e.target.value)
+        console.log(movies);       
     }
-    timeOut = setTimeout(() => {
-        if(!e.target.value.match("[a-zA-Z]")){
-            console.log("i didnt run");
-            return;
-        }
-        fetchData(e.target.value)
-    }, 1000)
 }
-input.addEventListener("input", onInput)
+input.addEventListener("input", debounce(onInput, 500))
